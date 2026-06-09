@@ -375,7 +375,7 @@ exports.reportUserDetails = async (req, res) => {
                     console.log("CISCOLOG_USER >> ", process.env.CISCOLOG_USER);
                     console.log("CISCOLOG_PASSWORD >> ", process.env.CISCOLOG_PASSWORD);
 
-                    console.log("response >> ", response.data);
+                    // console.log("response >> ", response.data);
 
                     if(response.status === 404){
                         resolve({
@@ -405,6 +405,8 @@ exports.reportUserDetails = async (req, res) => {
                                 framed_ip_address: sessionParams?.framed_ip_address,
                                 auth_acs_timestamp: sessionParams?.auth_acs_timestamp
                             };
+
+                            console.log("result >> ", result);
 
                         });
 
