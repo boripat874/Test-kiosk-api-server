@@ -219,8 +219,8 @@ app.get("/apitestxmlConvert", async (req, res) => {
         const sessionParams = result.sessionParameters;
 
         // ดึงค่าโดยใช้ [0] เพราะผลลัพธ์ของ xml2js จะเก็บค่าแท็กเป็น Array
-        const framed_ip_address = sessionParams.framed_ip_address;
-        const auth_acs_timestamp = sessionParams.auth_acs_timestamp;
+        const framed_ip_address = sessionParams?.framed_ip_address;
+        const auth_acs_timestamp = sessionParams?.auth_acs_timestamp?.[0];
 
         // ส่ง Response กลับไปเฉพาะ 2 ฟิลด์ที่ต้องการ
         res.send({
