@@ -210,17 +210,23 @@ app.get("/apitestxmlConvert", async (req, res) => {
 `;
 
     parser.parseString(xmlData, (err, result) => {
-
         if (err) {
             console.error('Error parsing XML:', err);
-            return;
+            return res.status(500).send({ error: 'Error parsing XML' });
         }
 
-        console.log(result);
+        // เข้าถึงข้อมูลผ่าน root element (sessionParameters)
+        const sessionParams = result.sessionParameters;
 
+        // ดึงค่าโดยใช้ [0] เพราะผลลัพธ์ของ xml2js จะเก็บค่าแท็กเป็น Array
+        const framed_ip_address = sessionParams?.framed_ip_address?.[0];
+        const auth_acs_timestamp = sessionParams?.auth_acs_timestamp?.[0];
+
+        // ส่ง Response กลับไปเฉพาะ 2 ฟิลด์ที่ต้องการ
         res.send({
-            result: result
-        })
+            framed_ip_address: framed_ip_address,
+            auth_acs_timestamp: auth_acs_timestamp
+        });
     });
 });
 
