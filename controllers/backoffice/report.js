@@ -384,7 +384,7 @@ exports.reportUserDetails = async (req, res) => {
                         });
                     }
 
-                    if(response.data != ""){
+                    if(response.data !== ""){
 
                         // ตอนสั่ง parseString ให้ใส่ object { explicitArray: false } เพิ่มเข้าไปในพารามิเตอร์ตัวที่ 2
                         parser.parseString(response.data, (err, result) => {
