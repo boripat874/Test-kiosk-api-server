@@ -210,12 +210,15 @@ app.get("/apitestxmlConvert", async (req, res) => {
 `;
 
     // ตอนสั่ง parseString ให้ใส่ object { explicitArray: false } เพิ่มเข้าไปในพารามิเตอร์ตัวที่ 2
-    parser.parseString(xmlData, { explicitArray: false }, (err, result) => {
-        if (err) return res.status(500).send({ error: err.message });
+    parser.parseString(xmlData, (err, result) => {
+        if (err) {
+            console.error('Error parsing XML:', err);
+            return res.status(500).send({ error: 'Error parsing XML' });
+        }
 
-        const sessionParams = result.sessionParameters;
+        // มี explicitArray: false แล้ว สามารถดึงตรงๆ ได้เลยครับ ไม่ต้องใส่ [0]
+        const sessionParams = result?.sessionParameters;
 
-        // พอดึงรูปแบบนี้ ข้อมูลจะมาเป็นข้อความเต็มๆ ไม่โดนตัดเหลือตัวแรกแล้วครับ
         res.send({
             framed_ip_address: sessionParams?.framed_ip_address,
             auth_acs_timestamp: sessionParams?.auth_acs_timestamp
