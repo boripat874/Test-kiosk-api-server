@@ -209,23 +209,16 @@ app.get("/apitestxmlConvert", async (req, res) => {
 </sessionParameters>
 `;
 
-    parser.parseString(xmlData, (err, result) => {
-        if (err) {
-            console.error('Error parsing XML:', err);
-            return res.status(500).send({ error: 'Error parsing XML' });
-        }
+    // ตอนสั่ง parseString ให้ใส่ object { explicitArray: false } เพิ่มเข้าไปในพารามิเตอร์ตัวที่ 2
+    parser.parseString(xmlData, { explicitArray: false }, (err, result) => {
+        if (err) return res.status(500).send({ error: err.message });
 
-        // เข้าถึงข้อมูลผ่าน root element (sessionParameters)
         const sessionParams = result.sessionParameters;
 
-        // ดึงค่าโดยใช้ [0] เพราะผลลัพธ์ของ xml2js จะเก็บค่าแท็กเป็น Array
-        const framed_ip_address = sessionParams.framed_ip_address[0];
-        const auth_acs_timestamp = sessionParams.auth_acs_timestamp[0];
-
-        // ส่ง Response กลับไปเฉพาะ 2 ฟิลด์ที่ต้องการ
+        // พอดึงรูปแบบนี้ ข้อมูลจะมาเป็นข้อความเต็มๆ ไม่โดนตัดเหลือตัวแรกแล้วครับ
         res.send({
-            framed_ip_address: framed_ip_address,
-            auth_acs_timestamp: auth_acs_timestamp
+            framed_ip_address: sessionParams?.framed_ip_address,
+            auth_acs_timestamp: sessionParams?.auth_acs_timestamp
         });
     });
 });
