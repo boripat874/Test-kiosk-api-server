@@ -386,35 +386,57 @@ exports.reportUserDetails = async (req, res) => {
 
                     if(response.data != ""){
 
+                        // ตอนสั่ง parseString ให้ใส่ object { explicitArray: false } เพิ่มเข้าไปในพารามิเตอร์ตัวที่ 2
                         parser.parseString(response.data, (err, result) => {
                             if (err) {
                                 console.error('Error parsing XML:', err);
-                                return;
+                                return res.status(500).send({ error: 'Error parsing XML' });
                             }
-    
-                            // Access the id
-                            const regex = /<framed_ip_address>(.*?)<\/framed_ip_address>[\s\S]*?<auth_acs_timestamp>(.*?)<\/auth_acs_timestamp>/g;
-                            const resultArray = [];
-                            let match;
-    
-                            while ((match = regex.exec(response.data)) !== null) {
-                                resultArray.push({
-                                    "framed_ip_address": match[1],
-                                    "auth_acs_timestamp": match[2]
-                                });
-                            }
-    
-                            result = resultArray; // Assign the result array to the result variable
-    
-                            // console.log("resultArray ====>>>> ", resultArray);
-                            
+
+                            // มี explicitArray: false แล้ว สามารถดึงตรงๆ ได้เลยครับ ไม่ต้องใส่ [0]
+                            const sessionParams = result?.sessionParameters;
+
                             // res.send({
-    
-                            //     "result": resultArray,
-    
-                            // })
-    
+                            //     framed_ip_address: sessionParams?.framed_ip_address,
+                            //     auth_acs_timestamp: sessionParams?.auth_acs_timestamp
+                            // });
+
+                            result = {
+                                framed_ip_address: sessionParams?.framed_ip_address,
+                                auth_acs_timestamp: sessionParams?.auth_acs_timestamp
+                            };
+
                         });
+
+                        // parser.parseString(response.data, (err, result) => {
+                        //     if (err) {
+                        //         console.error('Error parsing XML:', err);
+                        //         return;
+                        //     }
+    
+                        //     // Access the id
+                        //     const regex = /<framed_ip_address>(.*?)<\/framed_ip_address>[\s\S]*?<auth_acs_timestamp>(.*?)<\/auth_acs_timestamp>/g;
+                        //     const resultArray = [];
+                        //     let match;
+    
+                        //     while ((match = regex.exec(response.data)) !== null) {
+                        //         resultArray.push({
+                        //             "framed_ip_address": match[1],
+                        //             "auth_acs_timestamp": match[2]
+                        //         });
+                        //     }
+    
+                        //     result = resultArray; // Assign the result array to the result variable
+    
+                        //     // console.log("resultArray ====>>>> ", resultArray);
+                            
+                        //     // res.send({
+    
+                        //     //     "result": resultArray,
+    
+                        //     // })
+    
+                        // });
 
                     }else{
                         result = [];
